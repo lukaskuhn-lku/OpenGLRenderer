@@ -16,11 +16,17 @@
     <Filter Include="Quelldateien\imgui">
       <UniqueIdentifier>{81c2c4b2-a236-4e11-a9ce-966c2926e618}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\glad">
+      <UniqueIdentifier>{e7a3ce74-d560-4e3d-883d-e795802cee40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\shaders">
+      <UniqueIdentifier>{eba755fd-dc90-496d-99e2-c3ca2620f6d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\images">
+      <UniqueIdentifier>{8732888f-c275-4f3a-a296-2ded5ef8f4ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\glad.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -45,9 +51,25 @@
     <ClCompile Include="..\..\..\..\Documents\ThirdPartyLibs\cpp\imgui_widgets.cpp">
       <Filter>Quelldateien\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Desktop\glad.c">
+      <Filter>Quelldateien\glad</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="main.h">
+    <None Include="shader.vs">
+      <Filter>Quelldateien\shaders</Filter>
+    </None>
+    <None Include="shader.fs">
+      <Filter>Quelldateien\shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Documents\container.jpg">
+      <Filter>Quelldateien\images</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Shader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
