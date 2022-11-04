@@ -14,9 +14,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Shader.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "Texture.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -116,68 +114,20 @@ int main() {
 
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
-       
-
-    //Texture Loading
-    int width, height, nrChannels;
-
-    unsigned int texture1, texture2;
-
-    unsigned char* data1 = stbi_load("C:\\Users\\kuhn-\\Documents\\container.jpg", &width, &height, &nrChannels, 0);
-
-    if (data1) {
-        glGenTextures(1, &texture1);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data1);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else {
-        std::cout << "TEXTURE1 NOT LOADED" << std::endl;
-    }
-
-    stbi_set_flip_vertically_on_load(true); 
-    unsigned char* data2 = stbi_load("C:\\Users\\kuhn-\\Documents\\awesomeface.png", &width, &height, &nrChannels, 0);
-    if (data2)
-    {
-        glGenTextures(1, &texture2);
-        glBindTexture(GL_TEXTURE_2D, texture2);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data2);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else {
-        std::cout << "TEXTURE2 NOT LOADED" << std::endl;
-    }
-
-
+   
+ 
+    Texture firstTex = Texture("C:\\Users\\kuhn-\\Documents\\container.jpg", false, false);
+    Texture secondTex = Texture("C:\\Users\\kuhn-\\Documents\\awesomeface.png", true, true);
+    
 
     mainShader.use();
     mainShader.setInt("texture1", 0);
     mainShader.setInt("texture2", 1);
 
-
     mainShader.setVec3("color", 0.0f, 0.0f, 0.0f);
 
     bool checks = false;
     float colors[4];
-
-
-
 
     while (!glfwWindowShouldClose(window))
     {
@@ -186,7 +136,6 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //GLM TEST
         glm::mat4 trans = glm::mat4(1.0f);
         trans = glm::translate(trans, glm::vec3(0.0f, 0.0f, 0.0f));
         trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 1.0f));
@@ -196,10 +145,12 @@ int main() {
 
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
+        glBindTexture(GL_TEXTURE_2D, firstTex.ID);
 
+        
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
+        glBindTexture(GL_TEXTURE_2D, secondTex.ID);
+        
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
