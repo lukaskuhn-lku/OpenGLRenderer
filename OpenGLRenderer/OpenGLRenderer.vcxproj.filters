@@ -56,24 +56,24 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader.vs">
-      <Filter>Quelldateien\shaders</Filter>
-    </None>
-    <None Include="shader.fs">
-      <Filter>Quelldateien\shaders</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="..\..\..\..\Documents\container.jpg">
       <Filter>Quelldateien\images</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Shader.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="shader\Shader.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\shader.fs">
+      <Filter>Quelldateien\shaders</Filter>
+    </None>
+    <None Include="shader\shader.vs">
+      <Filter>Quelldateien\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

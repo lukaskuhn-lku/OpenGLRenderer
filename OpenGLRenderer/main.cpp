@@ -13,7 +13,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Shader.h"
+#include "shader/Shader.h"
 #include "Texture.h"
 
 void processInput(GLFWwindow* window);
@@ -78,7 +78,7 @@ int main() {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
 
-    Shader mainShader("shader.vs", "shader.fs");
+    Shader mainShader("shader/shader.vs", "shader/shader.fs");
 
     glEnable(GL_DEPTH_TEST);
 
