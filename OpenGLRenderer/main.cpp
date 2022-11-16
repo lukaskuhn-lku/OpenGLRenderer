@@ -15,6 +15,7 @@
 
 #include "shader/Shader.h"
 #include "Texture.h"
+#include "camera/Camera.h"
 
 void processInput(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -30,11 +31,12 @@ glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
+Camera camera = Camera(cameraPos, cameraFront, cameraUp);
+
 float lastX = 400, lastY = 300;
 
 float yaw = -90.0f;
 float pitch = 0.0f;
-
 
 //DELTA
 float deltaTime = 0.0f;	
@@ -81,7 +83,6 @@ int main() {
     Shader mainShader("shader/shader.vs", "shader/shader.fs");
 
     glEnable(GL_DEPTH_TEST);
-
 
     //VERTICES
     float vertices[] = {
@@ -159,31 +160,18 @@ int main() {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-
-
-    //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    //glEnableVertexAttribArray(2);
    
     Texture firstTex = Texture("C:\\Users\\kuhn-\\Downloads\\woodbox.jpg", false, false);
-
 
     mainShader.use();
     mainShader.setInt("texture1", 0);
 
-    
-    float pos[3] = {0.0f, 0.0f, 0.0f};
 
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-
-        glm::vec3 direction;
-        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        direction.y = sin(glm::radians(pitch));
-        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-        cameraFront = glm::normalize(direction);
 
         processInput(window);
 
@@ -193,14 +181,11 @@ int main() {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
         
-        glm::mat4 view = glm::mat4(1.0f);
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
         glm::mat4 projection;
         projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
         mainShader.setMat4("projection", projection);
-        mainShader.setMat4("view", view);
+        mainShader.setMat4("view", camera.view);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, firstTex.ID);
@@ -252,13 +237,13 @@ void processInput(GLFWwindow* window)
 
     const float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPos += cameraSpeed * cameraFront;
+        camera.movePos(CAMERA_UP, cameraSpeed);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPos -= cameraSpeed * cameraFront;
+        camera.movePos(CAMERA_DOWN, cameraSpeed);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        camera.movePos(CAMERA_LEFT, cameraSpeed);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        camera.movePos(CAMERA_RIGHT, cameraSpeed);
 }
 
 bool firstMouse = true;
@@ -289,4 +274,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
         pitch = 89.0f;
     if (pitch < -89.0f)
         pitch = -89.0f;
+
+    camera.moveView(yaw, pitch);
 }

@@ -169,6 +169,7 @@
     <Image Include="..\..\..\..\Documents\container.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camera\Camera.h" />
     <ClInclude Include="shader\Shader.h" />
     <ClInclude Include="Texture.h" />
   </ItemGroup>
