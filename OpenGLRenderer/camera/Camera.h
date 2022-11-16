@@ -25,6 +25,8 @@ public:
 		this->cameraPos = cameraPos;
 		this->cameraFront = cameraFront;
 		this->cameraUp = cameraUp;
+		
+		this->view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	}
 
 	void moveView(float yaw, float pitch) {
@@ -41,20 +43,22 @@ public:
 		switch (movement)
 		{
 		case CAMERA_UP:
-			cameraPos += cameraSpeed * cameraFront;
+			this->cameraPos += cameraSpeed * cameraFront;
 			break;
 		case CAMERA_DOWN:
-			cameraPos -= cameraSpeed * cameraFront;
+			this->cameraPos -= cameraSpeed * cameraFront;
 			break;
 		case CAMERA_LEFT:
-			cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+			this->cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 			break;
 		case CAMERA_RIGHT:
-			cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+			this->cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 			break;
 		default:
 			break;
 		}
+
+		this->view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	}
 
 
