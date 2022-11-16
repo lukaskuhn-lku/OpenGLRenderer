@@ -18,7 +18,7 @@ mono_crash.*
 
 #glad
 glad.c
-
+stb_image.h
 
 # Build results
 [Dd]ebug/
