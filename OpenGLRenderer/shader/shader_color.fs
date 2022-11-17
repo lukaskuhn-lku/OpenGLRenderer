@@ -9,11 +9,11 @@ uniform vec3 lightColor;
 uniform vec3 lightPos;  
 uniform vec3 viewPos;
 
+uniform float ambientStrength;
+uniform float specularStrength;
+
 void main()
 {
-    float ambientStrength = 0.2;
-    float specularStrength = 0.5;
-
     vec3 ambient = ambientStrength * lightColor;
     
     vec3 norm = normalize(Normal);
