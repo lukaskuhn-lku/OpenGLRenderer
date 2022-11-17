@@ -78,5 +78,14 @@
     <None Include="shader\shader.vs">
       <Filter>Quelldateien\shaders</Filter>
     </None>
+    <None Include="shader\shader_color.fs">
+      <Filter>Quelldateien\shaders</Filter>
+    </None>
+    <None Include="shader\shader_lamp.fs">
+      <Filter>Quelldateien\shaders</Filter>
+    </None>
+    <None Include="shader\shader_without_texture.vs">
+      <Filter>Quelldateien\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

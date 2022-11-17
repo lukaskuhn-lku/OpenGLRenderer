@@ -27,7 +27,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 
 //CAMERA
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.5f, 4.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -41,7 +41,6 @@ float pitch = 0.0f;
 //DELTA
 float deltaTime = 0.0f;	
 float lastFrame = 0.0f;
-
 
 int main() {
     glfwInit();
@@ -80,73 +79,63 @@ int main() {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
 
-    Shader mainShader("shader/shader.vs", "shader/shader.fs");
+    Shader lampShader("shader/shader_without_texture.vs", "shader/shader_lamp.fs");
+    Shader cubeShader("shader/shader_without_texture.vs", "shader/shader_color.fs");
+
 
     glEnable(GL_DEPTH_TEST);
 
     //VERTICES
     float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
     };
 
 
-    glm::vec3 cubePositions[] = {
-        glm::vec3(0.0f,  0.0f,  -0.7f),
-        glm::vec3(2.0f,  5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3(2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f,  3.0f, -7.5f),
-        glm::vec3(1.3f, -2.0f, -2.5f),
-        glm::vec3(1.5f,  2.0f, -2.5f),
-        glm::vec3(1.5f,  0.2f, -1.5f),
-        glm::vec3(-1.3f,  1.0f, -1.5f)
-    };
 
-
-    unsigned int VAO; //Vertex Array Object
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+    //LIGHT VAO
+    unsigned int lightVAO;
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
 
     unsigned int VBO; //Vertex Buffer Object
 
@@ -154,17 +143,26 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+    //CUBE VAO
+    unsigned int cubeVAO;
+    glGenVertexArrays(1, &cubeVAO);
+    glBindVertexArray(cubeVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3*sizeof(float)));
     glEnableVertexAttribArray(1);
 
-   
-    Texture firstTex = Texture("C:\\Users\\kuhn-\\Downloads\\woodbox.jpg", false, false);
 
-    mainShader.use();
-    mainShader.setInt("texture1", 0);
 
 
     while (!glfwWindowShouldClose(window))
@@ -175,36 +173,58 @@ int main() {
 
         processInput(window);
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT  | GL_DEPTH_BUFFER_BIT);
 
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+
+        lampShader.use();
+
+        lampShader.setMat4("projection", projection);
+        lampShader.setMat4("view", camera.view);
+
+        
+        glm::vec3 lightPos(1.2f, 1.0f, 3.0f);
+
+        glm::mat2 rotationMat = glm::mat2(1.0f);
+        rotationMat[0][0] = cos(glfwGetTime());
+        rotationMat[1][0] = -sin(glfwGetTime());
+        rotationMat[0][1] = sin(glfwGetTime());
+        rotationMat[1][1] = cos(glfwGetTime());
+
+        glm::vec2 lightPosXY(lightPos.x, lightPos.z);
+
+        glm::vec2 lightPosXYChanged = rotationMat* lightPosXY;
+
+        lightPos.y = sin(glfwGetTime()*4);
+        lightPos.x = lightPosXYChanged.x;
+        lightPos.z = lightPosXYChanged.y;
+
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+        lampShader.setMat4("model", model);
         
-        glm::mat4 projection;
-        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-
-        mainShader.setMat4("projection", projection);
-        mainShader.setMat4("view", camera.view);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, firstTex.ID);
+        glBindVertexArray(lightVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         
-       
-        glBindVertexArray(VAO);
 
-        for (unsigned int i = 0; i < 10; i++)
-        {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(cubePositions[i]));
+        cubeShader.use();
+        cubeShader.setMat4("projection", projection);
+        cubeShader.setMat4("view", camera.view);
 
-            float angle = (float)glfwGetTime() * 50;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+        model = glm::mat4(1.0f);
+        cubeShader.setMat4("model", model);
 
-            mainShader.setMat4("model", model);
+        cubeShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+        cubeShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+        cubeShader.setVec3("lightPos", lightPos);
+        cubeShader.setVec3("viewPos", camera.cameraPos);
 
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
+        glBindVertexArray(cubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
 
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -230,6 +250,8 @@ int main() {
     return 0;
 }
 
+bool cursorEnabled = false;
+
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -249,33 +271,31 @@ void processInput(GLFWwindow* window)
 bool firstMouse = true;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-    if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS){
-        if (firstMouse)
-        {
-            lastX = xpos;
-            lastY = ypos;
-            firstMouse = false;
-        }
-
-        float xoffset = xpos - lastX;
-        float yoffset = lastY - ypos;
-
+    if (firstMouse)
+    {
         lastX = xpos;
         lastY = ypos;
-
-        const float sensitivity = 0.02f;
-        xoffset *= sensitivity;
-        yoffset *= sensitivity;
-
-        yaw += xoffset;
-        pitch += yoffset;
-
-        //Restrain pitch to not flip
-        if (pitch > 89.0f)
-            pitch = 89.0f;
-        if (pitch < -89.0f)
-            pitch = -89.0f;
-
-        camera.moveView(yaw, pitch);
+        firstMouse = false;
     }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos;
+
+    lastX = xpos;
+    lastY = ypos;
+
+    const float sensitivity = 0.02f;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    yaw += xoffset;
+    pitch += yoffset;
+
+    //Restrain pitch to not flip
+    if (pitch > 89.0f)
+        pitch = 89.0f;
+    if (pitch < -89.0f)
+        pitch = -89.0f;
+
+    camera.moveView(yaw, pitch);
 }
