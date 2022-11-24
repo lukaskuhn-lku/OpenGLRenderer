@@ -16,13 +16,13 @@ This is a minimal Renderer I built in C++ with the OpenGL API.
 ## <a name="phonglighting">Phong Lighting</a>
 Implemented diffuse lighting in the shader which shades fragments based on the degree between light vector and normal vector (see Figure 1). 
 
-<img src="./Docs/Diffuse.jpg" alt="Diffuse Lighting" width="200"/>
+<img src="./Docs/Diffuse.JPG" alt="Diffuse Lighting" width="200"/>
 
 *Figure 1 - Phong Diffuse Lighting*
 
 Also implemented specular lighting in the shader which shades fragments based on the degree between the refelcted light vector and the camera vector (see Figure 2).
 
-<img src="./Docs/Specular.jpg" alt="Specular Lighting" width="350"/>
+<img src="./Docs/Specular.JPG" alt="Specular Lighting" width="350"/>
 
 *Figure 2 - Phong Specular Lighting*
 
